@@ -411,7 +411,7 @@
 
   end_time   = 1e9
 
-  num_steps  = 1000
+  num_steps  = 1000000
 
 
   l_max_its  = 30
