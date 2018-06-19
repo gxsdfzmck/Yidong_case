@@ -1,0 +1,150 @@
+##Cubit
+reset
+undo on
+##create a 2d geometry first
+create surface circle radius 1000 xplane
+create surface ellipse major radius 750 minor radius 500 xplane
+create surface circle radius 2 xplane
+create surface circle radius 2 xplane
+move body 3 x 0 y 0 z  250 include_merged
+move body 4 x 0 y 0 z -250 include_merged
+webcut volume all with plane yplane offset 0 imprint merge
+delete body 1 2 3 4
+subtract body 6 from body 5 keep
+subtract body 7 8 from body 6 keep
+delete body 5 6
+merge all
+
+##mesh the 2d geometry
+     curve 16 20 interval 16 #6
+mesh curve 16 20
+
+     curve 51 interval 16 #6
+mesh curve 51
+
+     curve 53 interval 16 #6
+mesh curve 53
+
+     curve 52 54 interval 2
+mesh curve 52 54
+
+     curve 60 scheme dualbias fine size 0.5 factor 1.15
+mesh curve 60
+
+     curve 56 scheme bias fine size 0.5 coarse size 100 start vertex 4
+mesh curve 56
+
+     curve 58 scheme bias fine size 0.5 coarse size 100 start vertex 8
+mesh curve 58
+
+     curve 11 15 interval 8 #4
+mesh curve 11 15
+
+     surface 23 size auto factor 5 #10
+mesh surface 23
+
+     surface 24 size auto factor 5 #10
+mesh surface 24
+
+     surface 12 size auto factor 5 #10
+mesh surface 12
+
+     surface 10 size auto factor 5 #10
+mesh surface 10
+
+##extrude to 3d geometry (set dipping angles here) <--------- parameter
+create curve location 0 0 0 location 240 0 0
+undo group begin
+sweep surface all along curve 61 merge
+delete curve 61
+undo group end
+
+##cut the planes <--------- parameter
+webcut volume 7 8 9 10 with plane xplane offset  60 imprint merge
+webcut volume 7 8 9 10 with plane xplane offset  90 imprint merge
+webcut volume 7 8 9 10 with plane xplane offset 120 imprint merge
+webcut volume 7 8 9 10 with plane xplane offset 150 imprint merge
+webcut volume 7 8 9 10 with plane xplane offset 180 imprint merge
+
+#mesh the interval between fractures (could refine) <--------- parameter
+     curve 177 230 289 342 interval 5 #10
+mesh curve 177 230 289 342 
+
+#mesh the extra spacing <--------- parameter
+     curve 118 337 interval 15 #8
+mesh curve 118 337 
+
+#mesh the volumes
+     volume 11 12 13 14 redistribute nodes off
+     volume 11 12 13 14 scheme sweep sweep_smooth linear sweep_transform translate propagate_bias autosmooth_target off
+mesh volume 11 12 13 14
+##
+     volume 15 16 17 18 redistribute nodes off
+     volume 15 16 17 18 scheme sweep sweep_smooth linear sweep_transform translate propagate_bias autosmooth_target off
+mesh volume 15 16 17 18 
+##
+     volume 19 20 21 22 redistribute nodes off
+     volume 19 20 21 22 scheme sweep sweep_smooth linear sweep_transform translate propagate_bias autosmooth_target off
+mesh volume 19 20 21 22
+##
+     volume 23 24 25 26 redistribute nodes off
+     volume 23 24 25 26 scheme sweep sweep_smooth linear sweep_transform translate propagate_bias autosmooth_target off
+mesh volume 23 24 25 26
+##
+     volume 27 28 29 30 redistribute nodes off
+     volume 27 28 29 30 scheme sweep sweep_smooth linear sweep_transform translate propagate_bias autosmooth_target off
+mesh volume 27 28 29 30
+##
+     volume 7  8  9  10 redistribute nodes off
+     volume 7  8  9  10 scheme sweep sweep_smooth linear sweep_transform translate propagate_bias autosmooth_target off
+mesh volume 7  8  9  10
+
+##define injection well block
+set duplicate block elements off
+block 1 volume 12 16 20 24 28 8
+
+##define the production well block
+set duplicate block elements off
+block 2 volume 11 15 19 23 27 7
+
+##define the fractures block
+set duplicate block elements off
+block 3 surface 65 101 137 173 209
+
+##define the matrix block
+set duplicate block elements off
+block 4 volume 14 13 18 17 22 21 26 25 30 29 10 9
+
+##hide the injection well and production well
+#volume 12 16 20 24 28 32 36 40 44 48 8 visibility off
+#volume 11 15 19 23 27 31 35 39 43 47 7 visibility off
+
+##have to delete the unwanted blocks if we need to show the sidesets correctly
+delete volume 12 16 20 24 28 8
+delete volume 11 15 19 23 27 7
+
+##define the injection boundary
+sideset 1001 curve 98     
+sideset 1002 curve 155
+sideset 1003 curve 210
+sideset 1004 curve 267 
+sideset 1005 curve 322 
+
+##define the production boundaries 
+sideset 1006 curve 90     
+sideset 1007 curve 147 
+sideset 1008 curve 202 
+sideset 1009 curve 259 
+sideset 1010 curve 314 
+
+##define the injection well walls
+sideset 1111 surface 53 90 125 162 197 195
+sideset 2222 surface 47 84 119 156 191 189 
+
+block 3 element type QUAD4
+
+##output mesh
+undo group begin
+set large exodus file off
+export mesh "~/FALCON/Yidong_case/full3d_a00_d30_coarse.e" dimension 3 block 3 4 overwrite
+undo group end
