@@ -52,7 +52,7 @@ mesh surface 12
 mesh surface 10
 
 ##extrude to 3d geometry (set dipping angles here) <--------- parameter
-create curve location 0 0 0 location 320 0 0
+create curve location 0 0 0 location 320 0 -320
 undo group begin
 sweep surface all along curve 61 merge
 delete curve 61
@@ -123,27 +123,27 @@ delete volume 12 16 20 24 28 8
 delete volume 11 15 19 23 27 7
 
 ##define the injection boundary
-sideset 1001 curve 98
+sideset 1001 curve 98     
 sideset 1002 curve 155
 sideset 1003 curve 210
-sideset 1004 curve 267
-sideset 1005 curve 322
+sideset 1004 curve 267 
+sideset 1005 curve 322 
 
-##define the production boundaries
-sideset 1006 curve 90
-sideset 1007 curve 147
-sideset 1008 curve 202
-sideset 1009 curve 259
-sideset 1010 curve 314
+##define the production boundaries 
+sideset 1006 curve 90     
+sideset 1007 curve 147 
+sideset 1008 curve 202 
+sideset 1009 curve 259 
+sideset 1010 curve 314 
 
 ##define the injection well walls
 sideset 1111 surface 53 90 125 162 197 195
-sideset 2222 surface 47 84 119 156 191 189
+sideset 2222 surface 47 84 119 156 191 189 
 
 block 3 element type QUAD4
 
 ##output mesh
 undo group begin
 set large exodus file off
-export mesh "~/FALCON/Yidong_case/full3d_a00_d50/mesh3d_a00_d50.e" dimension 3 block 3 4 overwrite
+export mesh "~/FALCON/Yidong_case/full3d_a45_d50/mesh3d_a45_d50.e" dimension 3 block 3 4 overwrite
 undo group end

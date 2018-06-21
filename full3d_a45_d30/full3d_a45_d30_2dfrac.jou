@@ -145,5 +145,5 @@ block 3 element type QUAD4
 ##output mesh
 undo group begin
 set large exodus file off
-export mesh "/Users/xiay/gitprojects/problems/full3d_a45_d30/mesh3d.e" dimension 3 block 3 4 overwrite
+export mesh "~/FALCON/Yidong_case/full3d_a45_d30/mesh3d_a45_d30.e" dimension 3 block 3 4 overwrite
 undo group end
